@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Java SpringBoot Roadmap Tracker</title>
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+        <style>
+            body {
+                background-color: #f8f9fa;
+            }
+            .lesson-title {
+                flex: 1;
+            }
+            .list-group-item {
+                cursor: pointer;
+                user-select: none;
+            }
+            .crossed {
+                text-decoration: line-through;
+                color: gray;
+            }
+            #lesson-list {
+                max-height: 70vh;
+                overflow-y: auto;
+            }
+            .subsection-title {
+                font-weight: bold;
+                margin-top: 1rem;
+                background-color: #e9ecef;
+            }
+            .subtopic {
+                margin-left: 1.5rem;
+                font-style: italic;
+            }
+        </style>
+    </head>
+    <body class="p-4">
+        <div class="container">
+            <h1 class="mb-3">Java SpringBoot Roadmap Tracker</h1>
+
+            <div class="row mb-3 g-2 align-items-center">
+                <div class="col-auto">
+                    <select id="filter-select" class="form-select">
+                        <option value="All">All</option>
+                        <option value="Completed">Completed</option>
+                        <option value="Pending">Pending</option>
+                    </select>
+                </div>
+                <div class="col-auto">
+                    <input id="search-input" type="text" class="form-control" placeholder="Search lesson..." />
+                </div>
+                <div class="col-auto">
+                    <select id="search-platform" class="form-select">
+                        <option value="google">Google</option>
+                        <option value="youtube">YouTube</option>
+                    </select>
+                </div>
+            </div>
+
+            <div id="counts" class="mb-3"></div>
+            <ul id="lesson-list" class="list-group shadow-sm"></ul>
+        </div>
+
+        <script>
+            const roadmap = {
+                title: "Perfect Roadmap To Learn Java SpringBoot In 2025-26",
+                sections: [
+                    {
+                        title: "Perfect Roadmap To Learn Java SpringBoot In 2025-26",
+                        sections: [
+                            {
+                                id: 1,
+                                title: "Java Fundamentals",
+                                topics: [
+                                    "Learn the Basics",
+                                    "Control Flow",
+                                    "Object-Oriented Programming (OOP)",
+                                    "Methods and Functions",
+                                    "Exception Handling",
+                                    "Collections Framework",
+                                    "Generics",
+                                    "File I/O",
+                                    "Threads and Concurrency",
+                                    "Java API",
+                                    "Modern Java Features",
+                                    {
+                                        subtopics: ["Streams, Lambdas, Optional", "Records, Sealed Classes, Pattern Matching", "Virtual Threads (Project Loom)"],
+                                    },
+                                    "Design Patterns",
+                                    "Java Memory Management",
+                                    "Unit Testing",
+                                    "Java Frameworks",
+                                    "Build Tools (Maven, Gradle)",
+                                    "Version Control",
+                                    "Coding Standards",
+                                    "IDE Proficiency",
+                                    "Performance Tuning and Garbage Collection",
+                                ],
+                            },
+                            {
+                                id: 2,
+                                title: "Spring Framework Basics",
+                                topics: [
+                                    "Introduction to Spring",
+                                    "Setting Up Spring Environment",
+                                    "Inversion of Control (IoC)",
+                                    "Dependency Injection (DI)",
+                                    "Spring Beans and Scopes",
+                                    "Bean Lifecycle and Context",
+                                    "Annotation-based Configuration (@Configuration, @ComponentScan)",
+                                    "Profiles and Conditional Beans (@Profile, @Conditional)",
+                                    "Introduction to Aspect-Oriented Programming (AOP)",
+                                    "Spring AOP Implementation",
+                                    "Spring JDBC & Transactions",
+                                    "Spring MVC Basics",
+                                ],
+                            },
+                            {
+                                id: 3,
+                                title: "Introduction to Spring Boot",
+                                topics: [
+                                    "Understanding Spring Boot",
+                                    "Setting Up a Spring Boot Project",
+                                    "Project Structure",
+                                    "Auto-Configuration",
+                                    "YAML Configuration",
+                                    "Starters and Dependencies",
+                                    "Embedded Servers",
+                                    "Profiles and External Configs",
+                                    "Actuator",
+                                    "DevTools",
+                                    "Logging and Observability",
+                                    "Spring Boot 3 and Native Image Support (GraalVM)",
+                                    "Testing and Integration",
+                                    "Handling Exceptions",
+                                ],
+                            },
+                            {
+                                id: 4,
+                                title: "Spring Data",
+                                topics: [
+                                    "Understand Data Persistence",
+                                    "Learn Basics of Relational Databases",
+                                    "Introduction to Spring Data JPA",
+                                    "Spring Boot and Data JPA Integration",
+                                    "Entity Relationships",
+                                    "Query Methods and Named Queries",
+                                    "Auditing with Spring Data JPA",
+                                    "Pagination and Sorting",
+                                    "Custom Repository Methods",
+                                    "NoSQL Databases and Spring Data",
+                                    "Spring Data REST",
+                                    "Transaction Management",
+                                    "Data Initialization",
+                                    "Spring Data Envers",
+                                ],
+                            },
+                            {
+                                id: 5,
+                                title: "Spring Security",
+                                topics: [
+                                    "Introduction to Security Concepts",
+                                    "Basic Spring Security Configuration",
+                                    "Authentication Providers",
+                                    "Password Encryption",
+                                    "Custom Authentication",
+                                    "Authorization",
+                                    "Method-Level Security",
+                                    "Spring Security Expression Language (SpEL)",
+                                    "OAuth 2.0 and OpenID Connect",
+                                    "Single Sign-On (SSO)",
+                                    "Cross-Site Request Forgery (CSRF) Protection",
+                                    "Session Management",
+                                    "Security Headers",
+                                    "Secure File Uploads",
+                                    "Spring Security with Spring Boot Actuator",
+                                    "Integration with JWT (JSON Web Tokens)",
+                                    "Testing Security Configurations",
+                                ],
+                            },
+                            {
+                                id: 6,
+                                title: "Spring Boot Test",
+                                topics: [
+                                    "Basics of Unit Testing",
+                                    "Introduction to JUnit",
+                                    "Writing Effective Test Cases",
+                                    "Mockito Fundamentals",
+                                    "Mocking and Stubbing",
+                                    "Parameterized Tests",
+                                    "Exception Testing",
+                                    "Test Suites",
+                                    "Integration Testing Basics",
+                                    "Spring Boot Testing Annotations",
+                                    "Mocking Dependencies in Spring Boot",
+                                    "Database Testing",
+                                    "Testing RESTful APIs",
+                                    "Test Coverage and Code Quality",
+                                    "Continuous Integration (CI) with Testing",
+                                    "Test Driven Development (TDD)",
+                                    "Testing asynchronous code",
+                                ],
+                            },
+                            {
+                                id: 7,
+                                title: "GraphQL with Spring Boot",
+                                topics: [
+                                    "Introduction to GraphQL",
+                                    "Basic GraphQL Queries",
+                                    "GraphQL Mutations",
+                                    "Data Fetching with DataLoaders",
+                                    "Pagination and Filtering",
+                                    "GraphQL and JPA Integration",
+                                    "Error Handling in GraphQL",
+                                    "Securing GraphQL Endpoints",
+                                    "GraphQL and Spring Security Integration",
+                                    "Testing GraphQL Endpoints",
+                                    "Performance Optimization",
+                                    "GraphQL Best Practices",
+                                ],
+                            },
+                            {
+                                id: 8,
+                                title: "Messaging with Spring Boot",
+                                topics: [
+                                    "Introduction to Messaging",
+                                    "Messaging Patterns",
+                                    "Introduction to Message Brokers",
+                                    "RabbitMQ",
+                                    "Spring Boot with RabbitMQ",
+                                    "Apache Kafka",
+                                    "Spring Boot with Apache Kafka",
+                                    "Messaging in Microservices",
+                                    "Message Serialization and Deserialization",
+                                    "Error Handling in Messaging Systems",
+                                    "Asynchronous Processing",
+                                    "Spring Cloud Stream",
+                                    "Security in Messaging Systems",
+                                ],
+                            },
+                            {
+                                id: 9,
+                                title: "Spring Boot Actuator",
+                                topics: [
+                                    "Introduction to Spring Boot Actuator",
+                                    "Integration with Spring Boot",
+                                    "Actuator Endpoints",
+                                    "Custom Endpoints",
+                                    "Security and Endpoints Protection",
+                                    "Monitoring and Metrics",
+                                    "Health Indicators",
+                                    "Info Endpoint",
+                                    "Logging and Auditing",
+                                    "Exposing Additional Information",
+                                    "Remote Management with JMX",
+                                    "Events and Event Listeners",
+                                    "Spring Boot Admin",
+                                ],
+                            },
+                            {
+                                id: 10,
+                                title: "Spring Batch",
+                                topics: [
+                                    "Introduction to Spring Batch",
+                                    "Core Components (Job, Step, ItemReader, ItemProcessor, ItemWriter)",
+                                    "Advanced Concepts (JobRepository, JobLauncher, JobParameters, JobExecutionListener / StepExecutionListener, Transaction Management, Job Restart and Recovery)",
+                                    "Chunk-Oriented Processing",
+                                    "Parallel and Scalable Processing",
+                                    "Data Sources and Integration",
+                                    "Error Handling and Retry",
+                                    "Monitoring and Management",
+                                    "Testing Spring Batch Jobs",
+                                ],
+                            },
+                            {
+                                id: 11,
+                                title: "Spring Cloud",
+                                topics: [
+                                    "Introduction to Spring Cloud",
+                                    "Configuring Microservices with Spring Cloud Config",
+                                    "Service Discovery with Eureka",
+                                    "Load Balancing with Ribbon",
+                                    "API Gateway with Spring Cloud Gateway",
+                                    "Distributed Tracing with Sleuth and Zipkin",
+                                    "Fault Tolerance with Hystrix",
+                                    "Event-Driven Communication with Spring Cloud Stream",
+                                    "Security in Microservices with Spring Cloud Security",
+                                    "Distributed Configuration with Consul",
+                                    "Circuit Breaker and Stateful Communication",
+                                    "Monitoring and Management",
+                                ],
+                            },
+                            {
+                                id: 12,
+                                title: "Spring AI",
+                                topics: [
+                                    "Introduction to Spring AI",
+                                    "LLM Abstractions (ChatModel, EmbeddingModel, ImageModel)",
+                                    "Prompt Templates",
+                                    "AI Client Configuration (spring-ai-starter-openai, spring-ai-starter-ollama)",
+                                    "Memory and Context Handling",
+                                    "Embeddings and Vector Databases",
+                                    {
+                                        subtopics: ["PostgreSQL (pgvector)", "Redis", "Pinecone", "Milvus"],
+                                    },
+                                    "RAG (Retrieval-Augmented Generation)",
+                                    {
+                                        subtopics: ["Combine LLMs with your data", "Build RAG pipelines using DocumentRetriever and EmbeddingModel"],
+                                    },
+                                    "AI Agents and Tools",
+                                    {
+                                        subtopics: ["Build agents that can call APIs or databases", "Chain tasks using the Spring AI Function Calling API"],
+                                    },
+                                    "Integrating AI with Microservices",
+                                    {
+                                        subtopics: ["Use AI endpoints as internal microservices", "Integrate AI insights into analytics, monitoring, or business workflows"],
+                                    },
+                                    "Monitor and Scale AI Workloads",
+                                ],
+                            },
+                            {
+                                id: 13,
+                                title: "Reactive Programming",
+                                topics: [
+                                    "Reactive Streams and Project Reactor",
+                                    "Mono & Flux",
+                                    "Backpressure Handling",
+                                    "Testing Reactive Code",
+                                    "Hybrid Model: Combining Virtual Threads with Reactive Flow",
+                                ],
+                            },
+                            {
+                                id: 14,
+                                title: "Building RESTful APIs",
+                                topics: [
+                                    "Understand RESTful Principles",
+                                    "Set Up a Development Environment",
+                                    "Plan API Endpoints",
+                                    "HTTP Methods and Status Codes",
+                                    "Request and Response Formats",
+                                    "RESTful Routing",
+                                    "Authentication and Authorization",
+                                    "Request Validation",
+                                    "Serialization and Deserialization",
+                                    "API Documentation",
+                                    "Error Handling",
+                                    "Rate Limiting",
+                                    "Testing",
+                                    "Versioning",
+                                    "Security Best Practices",
+                                    "Logging and Monitoring",
+                                    "Cross-Origin Resource Sharing (CORS)",
+                                ],
+                            },
+                            {
+                                id: 15,
+                                title: "Microservices Architecture",
+                                topics: [
+                                    "Microservices Fundamentals",
+                                    "API Gateway (Spring Cloud Gateway)",
+                                    "Service Discovery (Eureka/Consul)",
+                                    "Configuration Server",
+                                    "Circuit Breaker (Resilience4j)",
+                                    "Distributed Tracing (Micrometer, Zipkin, Sleuth)",
+                                    "Fault Tolerance and Observability",
+                                    "Event-Driven Microservices",
+                                    "Async Communication (Kafka, RabbitMQ)",
+                                    "AI-Assisted Microservices — Integrating AI Agents in Services",
+                                ],
+                            },
+                            {
+                                id: 16,
+                                title: "Docker and Kubernetes",
+                                topics: [
+                                    "Introduction to Docker",
+                                    "Installing Docker",
+                                    "Docker Images",
+                                    "Docker Containers",
+                                    "Docker Compose",
+                                    "Networking in Docker",
+                                    "Docker Volumes",
+                                    "Docker Registry",
+                                    "Docker Security",
+                                    "Introduction to Kubernetes",
+                                    "Kubernetes Architecture",
+                                    "Installing Kubernetes",
+                                    "Kubectl",
+                                    "Kubernetes Pods",
+                                    "Kubernetes Deployments",
+                                    "Services and Networking",
+                                    "Kubernetes Configurations",
+                                    "Persistent Volumes and Persistent Volume Claims",
+                                    "Kubernetes Security",
+                                ],
+                            },
+                            {
+                                id: 17,
+                                title: "CI/CD with Jenkins or GitLab CI",
+                                topics: [
+                                    "Introduction to CI/CD",
+                                    "Installing and Configuring Jenkins",
+                                    "Creating Your First Jenkins Job",
+                                    "Version Control Integration",
+                                    "Build Tools Integration",
+                                    "Automated Testing",
+                                    "Artifact Management",
+                                    "Continuous Deployment",
+                                    "Pipeline as Code",
+                                    "Jenkins Plugins",
+                                    "Monitoring and Notifications",
+                                    "Security in Jenkins",
+                                ],
+                            },
+                            {
+                                id: 18,
+                                title: "Logging and Monitoring",
+                                topics: [
+                                    "Introduction to Logging",
+                                    "Logging Frameworks",
+                                    "Logging Best Practices",
+                                    "Log Analysis Tools",
+                                    "Centralized Logging",
+                                    "Monitoring Concepts",
+                                    "Application Performance Monitoring (APM)",
+                                    "Custom Metrics and Instrumentation",
+                                    "Alerting and Notification",
+                                    "Distributed Tracing",
+                                    "Infrastructure Monitoring",
+                                    "Containerized Environments",
+                                    "Security Monitoring",
+                                    "Incident Response and Root Cause Analysis",
+                                    "Compliance and Audit Logging",
+                                ],
+                            },
+                            {
+                                id: 19,
+                                title: "Spring Boot Best Practices",
+                                topics: [
+                                    "Project Structure and Packaging",
+                                    "Dependency Management",
+                                    "Application Configuration",
+                                    "Logging and Debugging",
+                                    "Error Handling and Exception Logging",
+                                    "Security Best Practices",
+                                    "Data Access and ORM",
+                                    "Performance Tuning",
+                                    "Documentation and Comments",
+                                    "Profile-based Configuration",
+                                    "Versioning and API Evolution",
+                                ],
+                            },
+                            {
+                                id: 20,
+                                title: "Real-world Projects and Challenges",
+                                topics: [
+                                    "Build a Product Recommendation Engine using Spring Boot + Spring AI",
+                                    "Develop a ChatOps Dashboard for DevOps metrics",
+                                    "Implement LLM-powered Order Management System (AI-driven CRUD)",
+                                    "Create a Microservice-based RAG Knowledge Base",
+                                ],
+                            },
+                            {
+                                id: 21,
+                                title: "Stay Updated",
+                                topics: [
+                                    "Follow Spring.io, VMware Tanzu Blog",
+                                    "Explore Spring AI GitHub Repository",
+                                    "Contribute to open-source projects",
+                                    "Learn from community experts on YouTube and GitHub",
+                                ],
+                            },
+                        ],
+                    },
+                ],
+            };
+
+            const STORAGE_KEY = "java_lessons_completed";
+            let completedIds = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+
+            const lessonList = document.getElementById("lesson-list");
+            const filterSelect = document.getElementById("filter-select");
+            const searchInput = document.getElementById("search-input");
+            const searchPlatform = document.getElementById("search-platform");
+            const countsDisplay = document.getElementById("counts");
+
+            function saveCompleted() {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds));
+            }
+
+            function renderLessons() {
+                const filter = filterSelect.value;
+                const searchText = searchInput.value.toLowerCase();
+                lessonList.innerHTML = "";
+                let counts = { Completed: 0, Pending: 0 };
+
+                const sections = roadmap.sections[0].sections;
+                sections.forEach((section) => {
+                    const sectionHeader = document.createElement("li");
+                    sectionHeader.className = "list-group-item subsection-title";
+                    sectionHeader.textContent = section.title;
+                    lessonList.appendChild(sectionHeader);
+                    const addTopic = (topic, parentId = section.id) => {
+                        if (typeof topic === "string") {
+                            // simple topic
+                            const lessonId = parentId + "-" + topic;
+                            appendLesson(lessonId, topic, parentId);
+                        } else if (topic.subtopics) {
+                            // object with subtopics only
+                            topic.subtopics.forEach((sub) => {
+                                const subId = parentId + "-" + sub;
+                                appendLesson(subId, sub, parentId, true);
+                            });
+                        }
+                    };
+
+                    const appendLesson = (id, text, parentId, isSub = false) => {
+                        const completed = completedIds.includes(id);
+                        if ((filterSelect.value === "Completed" && !completed) || (filterSelect.value === "Pending" && completed)) return;
+                        if (searchInput.value && !text.toLowerCase().includes(searchInput.value.toLowerCase())) return;
+
+                        if (completed) counts.Completed++;
+                        else counts.Pending++;
+
+                        const li = document.createElement("li");
+                        li.className = "list-group-item d-flex align-items-center" + (isSub ? " subtopic" : "");
+                        li.dataset.id = id;
+
+                        const span = document.createElement("span");
+                        span.className = "lesson-title";
+                        span.textContent = text;
+                        if (completed) span.classList.add("crossed");
+                        li.appendChild(span);
+
+                        // Click → search
+                        li.addEventListener("click", () => {
+                            const query = encodeURIComponent(text + " java");
+                            const platform = searchPlatform.value;
+                            const url = platform === "google" ? `https://www.google.com/search?q=${query}` : `https://www.youtube.com/results?search_query=${query}`;
+                            window.open(url, "_blank");
+                        });
+
+                        // Right click → toggle
+                        li.addEventListener("contextmenu", (e) => {
+                            e.preventDefault();
+                            if (completed) completedIds = completedIds.filter((x) => x !== id);
+                            else completedIds.push(id);
+                            saveCompleted();
+                            renderLessons();
+                        });
+
+                        lessonList.appendChild(li);
+                    };
+
+                    section.topics.forEach((topic) => addTopic(topic, section.id));
+                });
+
+                countsDisplay.innerHTML = `
+        <span class="badge bg-success me-2">Completed: ${counts.Completed}</span>
+        <span class="badge bg-secondary me-2">Pending: ${counts.Pending}</span>
+    `;
+            }
+
+            filterSelect.addEventListener("change", renderLessons);
+            searchInput.addEventListener("input", renderLessons);
+            searchPlatform.addEventListener("change", renderLessons);
+
+            renderLessons();
+        </script>
+    </body>
+</html>
