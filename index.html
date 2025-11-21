@@ -47,14 +47,18 @@
                         <option value="Pending">Pending</option>
                     </select>
                 </div>
-                <div class="col-auto">
+                <div class="col-auto flex-grow-1">
                     <input id="search-input" type="text" class="form-control" placeholder="Search lesson..." />
                 </div>
-                <div class="col-auto">
-                    <select id="search-platform" class="form-select">
-                        <option value="google">Google</option>
-                        <option value="youtube">YouTube</option>
-                    </select>
+                <div class="col-auto d-flex gap-3 align-items-center">
+                    <div class="form-check form-switch mb-0">
+                        <input class="form-check-input" type="checkbox" id="java-toggle">
+                        <label class="form-check-label fw-bold" for="java-toggle">Include 'java' in search</label>
+                    </div>
+                    <div class="btn-group" role="group">
+                        <button id="btn-google" type="button" class="btn btn-outline-primary">Google</button>
+                        <button id="btn-youtube" type="button" class="btn btn-outline-danger">YouTube</button>
+                    </div>
                 </div>
             </div>
 
@@ -476,17 +480,61 @@
             };
 
             const STORAGE_KEY = "java_lessons_completed";
+            const STORAGE_KEY_JAVA = "search_include_java";
+            const STORAGE_KEY_PLATFORM = "search_platform";
+
             let completedIds = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
+            let includeJava = localStorage.getItem(STORAGE_KEY_JAVA) !== "false"; // Default true
+            let searchPlatform = localStorage.getItem(STORAGE_KEY_PLATFORM) || "google"; // Default google
 
             const lessonList = document.getElementById("lesson-list");
             const filterSelect = document.getElementById("filter-select");
             const searchInput = document.getElementById("search-input");
-            const searchPlatform = document.getElementById("search-platform");
             const countsDisplay = document.getElementById("counts");
+            
+            const javaToggleInput = document.getElementById("java-toggle");
+            const btnGoogle = document.getElementById("btn-google");
+            const btnYoutube = document.getElementById("btn-youtube");
 
             function saveCompleted() {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds));
             }
+
+            function updateControls() {
+                // Update Java Toggle UI
+                javaToggleInput.checked = includeJava;
+
+                // Update Platform UI
+                if (searchPlatform === "google") {
+                    btnGoogle.classList.add("active", "btn-primary");
+                    btnGoogle.classList.remove("btn-outline-primary");
+                    btnYoutube.classList.remove("active", "btn-danger");
+                    btnYoutube.classList.add("btn-outline-danger");
+                } else {
+                    btnYoutube.classList.add("active", "btn-danger");
+                    btnYoutube.classList.remove("btn-outline-danger");
+                    btnGoogle.classList.remove("active", "btn-primary");
+                    btnGoogle.classList.add("btn-outline-primary");
+                }
+            }
+
+            javaToggleInput.addEventListener("change", (e) => {
+                includeJava = e.target.checked;
+                localStorage.setItem(STORAGE_KEY_JAVA, includeJava);
+                updateControls();
+            });
+
+            btnGoogle.addEventListener("click", () => {
+                searchPlatform = "google";
+                localStorage.setItem(STORAGE_KEY_PLATFORM, searchPlatform);
+                updateControls();
+            });
+
+            btnYoutube.addEventListener("click", () => {
+                searchPlatform = "youtube";
+                localStorage.setItem(STORAGE_KEY_PLATFORM, searchPlatform);
+                updateControls();
+            });
 
             function renderLessons() {
                 const filter = filterSelect.value;
@@ -534,9 +582,12 @@
 
                         // Click → search
                         li.addEventListener("click", () => {
-                            const query = encodeURIComponent(text + " java");
-                            const platform = searchPlatform.value;
-                            const url = platform === "google" ? `https://www.google.com/search?q=${query}` : `https://www.youtube.com/results?search_query=${query}`;
+                            let queryText = text;
+                            if (includeJava) {
+                                queryText += " java";
+                            }
+                            const query = encodeURIComponent(queryText);
+                            const url = searchPlatform === "google" ? `https://www.google.com/search?q=${query}` : `https://www.youtube.com/results?search_query=${query}`;
                             window.open(url, "_blank");
                         });
 
@@ -563,8 +614,9 @@
 
             filterSelect.addEventListener("change", renderLessons);
             searchInput.addEventListener("input", renderLessons);
-            searchPlatform.addEventListener("change", renderLessons);
-
+            
+            // Initial setup
+            updateControls();
             renderLessons();
         </script>
     </body>
