@@ -28,6 +28,10 @@
                 font-weight: bold;
                 margin-top: 1rem;
                 background-color: #e9ecef;
+                cursor: pointer;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
             }
             .subtopic {
                 margin-left: 1.5rem;
@@ -482,10 +486,12 @@
             const STORAGE_KEY = "java_lessons_completed";
             const STORAGE_KEY_JAVA = "search_include_java";
             const STORAGE_KEY_PLATFORM = "search_platform";
+            const STORAGE_KEY_COLLAPSED = "roadmap_collapsed_sections";
 
             let completedIds = JSON.parse(localStorage.getItem(STORAGE_KEY) || "[]");
             let includeJava = localStorage.getItem(STORAGE_KEY_JAVA) !== "false"; // Default true
             let searchPlatform = localStorage.getItem(STORAGE_KEY_PLATFORM) || "google"; // Default google
+            let collapsedSections = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY_COLLAPSED) || "[]"));
 
             const lessonList = document.getElementById("lesson-list");
             const filterSelect = document.getElementById("filter-select");
@@ -498,6 +504,10 @@
 
             function saveCompleted() {
                 localStorage.setItem(STORAGE_KEY, JSON.stringify(completedIds));
+            }
+
+            function saveCollapsed() {
+                localStorage.setItem(STORAGE_KEY_COLLAPSED, JSON.stringify([...collapsedSections]));
             }
 
             function updateControls() {
@@ -544,10 +554,37 @@
 
                 const sections = roadmap.sections[0].sections;
                 sections.forEach((section) => {
+                    const isCollapsed = collapsedSections.has(section.id);
+                    
                     const sectionHeader = document.createElement("li");
                     sectionHeader.className = "list-group-item subsection-title";
-                    sectionHeader.textContent = section.title;
+                    sectionHeader.innerHTML = `
+                        <span>${section.title}</span>
+                        <span class="badge bg-secondary">${isCollapsed ? "+" : "-"}</span>
+                    `;
+                    
+                    sectionHeader.addEventListener("click", () => {
+                        if (collapsedSections.has(section.id)) {
+                            collapsedSections.delete(section.id);
+                        } else {
+                            collapsedSections.add(section.id);
+                        }
+                        saveCollapsed();
+                        renderLessons();
+                    });
+                    
                     lessonList.appendChild(sectionHeader);
+
+                    if (isCollapsed) {
+                        // Calculate counts even if collapsed, so the stats are correct
+                        // We need to iterate through topics to count completed/pending
+                        // But we don't render them.
+                        // Actually, let's just skip rendering.
+                        // To keep counts accurate, we should probably still iterate.
+                        // Let's refactor slightly to separate counting from rendering if needed,
+                        // but for now, let's just iterate and not append if collapsed.
+                    }
+
                     const addTopic = (topic, parentId = section.id) => {
                         if (typeof topic === "string") {
                             // simple topic
@@ -564,11 +601,17 @@
 
                     const appendLesson = (id, text, parentId, isSub = false) => {
                         const completed = completedIds.includes(id);
+                        
+                        // Update counts regardless of visibility
+                        if (completed) counts.Completed++;
+                        else counts.Pending++;
+
+                        // Filtering logic
                         if ((filterSelect.value === "Completed" && !completed) || (filterSelect.value === "Pending" && completed)) return;
                         if (searchInput.value && !text.toLowerCase().includes(searchInput.value.toLowerCase())) return;
 
-                        if (completed) counts.Completed++;
-                        else counts.Pending++;
+                        // If section is collapsed, don't render the element
+                        if (isCollapsed) return;
 
                         const li = document.createElement("li");
                         li.className = "list-group-item d-flex align-items-center" + (isSub ? " subtopic" : "");
